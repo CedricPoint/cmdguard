@@ -9,7 +9,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 
-export const HOOK_COMMAND = 'npx -y cmdguard hook';
+export const HOOK_COMMAND = 'npx -y github:CedricPoint/cmdguard hook';
 
 export function settingsPath(scope, cwd = process.cwd()) {
   if (scope === 'global') return join(homedir(), '.claude', 'settings.json');

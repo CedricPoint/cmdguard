@@ -3,7 +3,7 @@
 **A second pair of eyes on the shell commands your AI agent runs.**
 
 [![CI](https://github.com/CedricPoint/cmdguard/actions/workflows/ci.yml/badge.svg)](https://github.com/CedricPoint/cmdguard/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/cmdguard.svg)](https://www.npmjs.com/package/cmdguard)
+[![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](package.json)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](package.json)
 
@@ -15,7 +15,7 @@ cmdguard reads a command line the way a shell would, and tells you whether it is
 safe, worth a confirmation, or something that should never run unattended.
 
 ```console
-$ npx cmdguard check "rm -rf $BUILD/"
+$ cmdguard check "rm -rf $BUILD/"
  DENY  rm -rf /
 
   ✖ Recursive delete of a system or home directory [fs.rm-root]
@@ -23,7 +23,7 @@ $ npx cmdguard check "rm -rf $BUILD/"
     why   This removes an entire tree that the machine (or the user) depends on. There is no undo.
     safer Delete the specific subdirectory you mean, with an absolute path you printed first.
 
-$ npx cmdguard check "git reset --hard && git clean -fdx"
+$ cmdguard check "git reset --hard && git clean -fdx"
  ASK   git reset --hard && git clean -fdx
 
   ▲ Hard reset [git.reset-hard]
@@ -34,27 +34,31 @@ $ npx cmdguard check "git reset --hard && git clean -fdx"
     why   `git clean -fdx` removes local config, .env files and build caches that git never saw.
     safer Dry run it: `git clean -nd`.
 
-$ npx cmdguard check "npm test"
+$ cmdguard check "npm test"
  OK    npm test
        no rule matched
 ```
 
-Zero dependencies. One file to install. Works as a Claude Code hook, as a CLI in
+Zero dependencies. Nothing to configure. Works as a Claude Code hook, as a CLI in
 CI, or as a library in your own agent.
 
 ## Install
 
 ```bash
-npx cmdguard check "rm -rf /"     # no install at all
-npm install -g cmdguard           # or keep it around
+# run it once, without installing anything
+npx github:CedricPoint/cmdguard check "rm -rf /"
+
+# or keep it on your PATH
+npm install -g github:CedricPoint/cmdguard
 ```
 
-Requires Node 18 or later.
+Requires Node 18 or later. No dependencies, no build step, no postinstall
+script — `src/` is the whole thing, and it is short enough to read.
 
 ## Use it with Claude Code
 
 ```bash
-npx cmdguard install
+npx github:CedricPoint/cmdguard install
 ```
 
 That adds a `PreToolUse` hook to `.claude/settings.json` (use `--global` for
@@ -82,7 +86,7 @@ it did not recognise would be worse than no guard at all.
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [{ "type": "command", "command": "npx -y cmdguard hook" }]
+        "hooks": [{ "type": "command", "command": "npx -y github:CedricPoint/cmdguard hook" }]
       }
     ]
   }
@@ -134,7 +138,7 @@ ssh prod "rm -rf /"
 env FOO=1 /bin/rm -rf /
 ```
 
-34 rules ship by default — `npx cmdguard rules` lists them all:
+34 rules ship by default — `cmdguard rules` lists them all:
 
 | area | examples |
 | --- | --- |
@@ -154,7 +158,7 @@ all come back clean.
 ## Configuration
 
 Optional. Drop a `.cmdguard.json` anywhere up from the working directory —
-`npx cmdguard init` writes a commented starting point.
+`cmdguard init` writes a commented starting point.
 
 ```jsonc
 {
