@@ -1,0 +1,48 @@
+{
+  "name": "cmdguard",
+  "version": "0.1.0",
+  "description": "A second pair of eyes on the shell commands your AI agent runs. Zero dependencies, works as a Claude Code hook or a plain CLI.",
+  "type": "module",
+  "bin": {
+    "cmdguard": "bin/cmdguard.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./rules": "./src/rules.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "check": "node bin/cmdguard.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "claude-code",
+    "hook",
+    "shell",
+    "safety",
+    "guardrails",
+    "cli",
+    "devtools",
+    "security"
+  ],
+  "license": "MIT",
+  "author": "CedricPoint",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CedricPoint/cmdguard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CedricPoint/cmdguard/issues"
+  },
+  "homepage": "https://github.com/CedricPoint/cmdguard#readme",
+  "engines": {
+    "node": ">=18"
+  }
+}

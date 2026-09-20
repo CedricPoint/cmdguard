@@ -1,0 +1,29 @@
+name: Rule request
+description: A command cmdguard should have flagged (or should stop flagging)
+labels: [rule]
+body:
+  - type: textarea
+    id: command
+    attributes:
+      label: The command
+      description: Paste it exactly as it was run.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: expected
+    attributes:
+      label: What should cmdguard say?
+      options: [deny, ask, warn, allow]
+    validations:
+      required: true
+  - type: input
+    id: actual
+    attributes:
+      label: What does it say today?
+      description: "Run: npx cmdguard check \"<command>\""
+  - type: textarea
+    id: why
+    attributes:
+      label: What goes wrong if it runs
+      description: One or two sentences. What is lost, and can it be recovered?
