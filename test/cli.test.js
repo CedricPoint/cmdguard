@@ -62,7 +62,10 @@ test('hook mode survives garbage on stdin', () => {
 
 test('rules and help are printed', () => {
   assert.match(run(['rules', '--no-config']).stdout, /fs\.rm-root/);
-  assert.equal(JSON.parse(run(['rules', '--json', '--no-config']).stdout).length > 20, true);
+  // Over one pipe buffer: a forced process.exit() would truncate this.
+  const json = run(['rules', '--json', '--no-config']).stdout;
+  assert.ok(json.length > 8192, `expected a long payload, got ${json.length} bytes`);
+  assert.equal(JSON.parse(json).length > 20, true);
   assert.match(run(['--help']).stdout, /Usage/);
   assert.match(execFileSync(process.execPath, [bin, '--version'], { encoding: 'utf8' }), /^\d+\.\d+\.\d+/);
 });

