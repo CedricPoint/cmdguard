@@ -1,5 +1,7 @@
 # cmdguard
 
+**English** · [Français](README.fr.md)
+
 **A second pair of eyes on the shell commands your AI agent runs.**
 
 [![CI](https://github.com/CedricPoint/cmdguard/actions/workflows/ci.yml/badge.svg)](https://github.com/CedricPoint/cmdguard/actions/workflows/ci.yml)
